@@ -20,3 +20,7 @@ const testConnection = async () => {
         console.error('Error al conectar a MySQL:', error);
     }
 };
+
+testConnection();
+
+module.exports = pool;
