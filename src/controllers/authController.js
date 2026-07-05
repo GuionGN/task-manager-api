@@ -40,7 +40,7 @@ const register = async (req, res) => {
         );
 
         res.status(201).json({
-            message: 'Usuario registrado',
+            message: 'Inicio de Usuario',
             token,
             user: {
                 id: result.insertId,
@@ -55,7 +55,7 @@ const register = async (req, res) => {
 };
 
 //Metodo de Logeo
-const login = async (req, res) =>{
+const login = async (req, res) => {
     try{
         const { email, password } = req.body;
 
@@ -102,8 +102,8 @@ const login = async (req, res) =>{
         });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Error interno'})
+        res.status(500).json({ error: 'Error interno 2'})
     }
-}
+};
 
 module.exports = { register, login };
