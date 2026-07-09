@@ -1,5 +1,6 @@
 require('dotenv').config();
 const pool = require('../config/db');
+const VALID_STATUSES = ['pending', 'in_progress', 'completed'];
 
 //Metodo de crear tareas
 const createTask = async(req, res) => {
@@ -7,14 +8,28 @@ const createTask = async(req, res) => {
         const { title, description, status } = req.body;
 
         if(!title){
-            return res.status(400).json ({ error: 'No existe el titulo'});
+            return res.status(400).json ({ error: 'Titulo no existe'});
         }
 
+        const titleMod = title;
+        titleMod.trim();
+
+        if(!titleMod){
+            return res.status(400).json ({ error: 'Titulo vacío'});
+        }
+
+        title.trim();
+
+        if(status != null){
+            if(VALID_STATUSES.indexOf(status) == -1){
+                return res.status(400).json ({ error: 'No existe, comandos: pending, in_progress, completed'});
+            }
+        }
         const user_id = req.user.id;
 
         const [result] = await pool.query(
-            'INSERT INTO tasks (user_id, title, description) VALUES (?, ?, ?)',
-            [ user_id, title, description ]
+            'INSERT INTO tasks (user_id, title, description, status) VALUES (?, ?, ?, ?)',
+            [ user_id, title, description, status ]
         );
 
         res.status(201).json({
@@ -23,7 +38,8 @@ const createTask = async(req, res) => {
             task: {
                 id: result.insertId,
                 title,
-                description
+                description,
+                status
             }
 
         })

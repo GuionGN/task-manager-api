@@ -18,3 +18,6 @@ CREATE TABLE tasks (
 
 SELECT * FROM users;
 SELECT * FROM tasks;
+
+
+DELETE FROM tasks WHERE	user_id;	
