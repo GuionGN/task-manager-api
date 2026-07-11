@@ -12,6 +12,15 @@ app.use(express.json());
 app.use('/tasks', taskRoutes);
 app.use('/auth', authRoutes);
 
+app.use((req, res) => {
+    res.status(404).json ({ error: 'Ruta no encontrada'});
+});
+
+app.use((err, req, res, next) => {
+    console.error(err);
+    res.status(500).json({ error: 'Error interno del server'});
+});
+
 
 app.get('/health', (req, res) => {
     res.json({status: 'OK', message: 'task-manager-api Funcionando' });

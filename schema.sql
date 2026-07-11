@@ -16,8 +16,5 @@ CREATE TABLE tasks (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
-SELECT * FROM users;
 SELECT * FROM tasks;
-
-
-DELETE FROM tasks WHERE	user_id;	
+SELECT * FROM users;
