@@ -137,7 +137,6 @@ const updateTask = async(req, res) => {
 
         const existingTask = result[0];
 
-        // Título: si vino, se valida y se usa. Si no, se mantiene el actual.
         let finalTitle = existingTask.title;
         if(title != null){
             const titleMod = title.trim();
@@ -147,7 +146,6 @@ const updateTask = async(req, res) => {
             finalTitle = titleMod;
         }
 
-        // Status: si vino, se valida contra la lista. Si no, se mantiene el actual.
         let finalStatus = existingTask.status;
         if(status != null){
             if(VALID_STATUSES.indexOf(status) == -1){
@@ -156,7 +154,6 @@ const updateTask = async(req, res) => {
             finalStatus = status;
         }
 
-        // Description: si vino, se usa. Si no, se mantiene la actual.
         const finalDescription = description != null ? description : existingTask.description;
 
         const [ resultUpdate ] = await pool.query(
@@ -179,7 +176,7 @@ const updateTask = async(req, res) => {
 
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Error interno 6'})
+        res.status(500).json({ error: 'Error interno 6'});
     }
 };
 //Metodo DELETE
@@ -204,4 +201,36 @@ const deleteTask = async(req, res) => {
         res.status(500).json({ error: 'Error interno'});
         }   
 };
-module.exports = { createTask, getTasks, getTaskById, updateTask, deleteTask };
+//Metodo Complete
+const completeTask = async(req, res) => {
+    try{
+
+        const task_id = req.params.id;
+        const user_id = req.user.id;
+        const completed = VALID_STATUSES[2];
+
+        const [ result ] = await pool.query(
+            'SELECT * FROM tasks WHERE id = ? AND user_id = ?',
+            [ task_id, user_id ]
+        );
+
+        if(result.length === 0){
+            return res.status(404).json({ error: 'No existe la tarea'})
+        };
+
+        const [ resultUpdate ] = await pool.query(
+            'UPDATE tasks SET status = ? WHERE id = ? AND user_id = ?',
+            [ completed, task_id, user_id ]
+        );
+
+
+        res.status(200).json({
+            message: 'Tarea Actualizada',
+        });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error interno 7'});
+    }
+};
+module.exports = { createTask, getTasks, getTaskById, updateTask, deleteTask, completeTask };
